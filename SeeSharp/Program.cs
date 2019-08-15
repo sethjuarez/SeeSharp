@@ -18,7 +18,6 @@ namespace SeeSharp
         [VectorType]
         public string[] Prediction;
 
-        //[ColumnName("loss")]
         [OnnxSequenceType(typeof(IDictionary<string, float>))]
         public IEnumerable<IDictionary<string, float>> loss;
     }
@@ -39,12 +38,18 @@ namespace SeeSharp
             var predictor = LoadModel(modelFile);
 
 
-            Console.WriteLine("Reading Folder...");
+            Console.WriteLine("\n\nReading Folder...");
             foreach (var file in Directory.EnumerateFiles("images", "*.jpg"))
             {
                 Console.WriteLine(file);
                 var output = predictor.Predict(new ImageInput { Image = (Bitmap)Image.FromFile(file) });
-                Console.WriteLine($"Label: {output.Prediction}\nLoss: {output.loss}\n\n");
+                Console.WriteLine($"Label: {output.Prediction[0]}");
+                var loss = output.loss.FirstOrDefault();
+                foreach (var item in loss.Keys)
+                {
+                    Console.WriteLine($"\t{item}: {loss[item]}");
+                }
+                Console.WriteLine("------------------------------------\n\n");
             }
             
             Console.ReadKey();
