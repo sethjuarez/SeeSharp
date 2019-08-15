@@ -18,9 +18,9 @@ namespace SeeSharp
         [VectorType]
         public string[] Prediction;
 
-        [ColumnName("loss")]
-        [OnnxSequenceType]
-        public List<float> Loss;
+        //[ColumnName("loss")]
+        [OnnxSequenceType(typeof(IDictionary<string, float>))]
+        public IEnumerable<IDictionary<string, float>> loss;
     }
 
     public class ImageInput
@@ -44,7 +44,7 @@ namespace SeeSharp
             {
                 Console.WriteLine(file);
                 var output = predictor.Predict(new ImageInput { Image = (Bitmap)Image.FromFile(file) });
-                Console.WriteLine($"Label: {output.Prediction}\nLoss: {output.Loss}\n\n");
+                Console.WriteLine($"Label: {output.Prediction}\nLoss: {output.loss}\n\n");
             }
             
             Console.ReadKey();
